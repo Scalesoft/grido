@@ -265,9 +265,11 @@ class Doctrine extends \Nette\Object implements IDataSource
         $qb->setMaxResults($limit);
 
         if (is_string($column)) {
-            $mapping = isset($this->filterMapping[$column])
+            $mapping = (isset($this->filterMapping[$column])
                 ? $this->filterMapping[$column]
-                : current($qb->getRootAliases()) . '.' . $column;
+                : (Strings::contains($column, ".")
+                    ? $column
+                    : current($qb->getRootAliases()) . '.' . $column));
 
             $qb->select($mapping)->distinct()->orderBy($mapping);
         }
