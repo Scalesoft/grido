@@ -48,6 +48,9 @@ abstract class Column extends \Grido\Components\Component
     /** @var string */
     protected $column;
 
+    /** @var bool */
+    protected $optionalValue = FALSE;
+
     /** @var \Nette\Utils\Html <td> html tag */
     protected $cellPrototype;
 
@@ -112,6 +115,12 @@ abstract class Column extends \Grido\Components\Component
     public function setColumn($column)
     {
         $this->column = $column;
+        return $this;
+    }
+
+    public function setValueOptional($isOptional = TRUE)
+    {
+        $this->optionalValue = $isOptional;
         return $this;
     }
 
@@ -292,7 +301,26 @@ abstract class Column extends \Grido\Components\Component
             return call_user_func_array($this->customRender, [$row, $this->customRenderVariables]);
         }
 
-        $value = $this->getValue($row);
+        try {
+            $value = $this->getValue($row);
+        }
+        catch (\Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException $e) {
+            if ($this->optionalValue) {
+                $value = NULL;
+            }
+            else {
+                throw $e;
+            }
+        }
+        catch (\Doctrine\ORM\EntityNotFoundException $e) {
+            if ($this->optionalValue) {
+                $value = NULL;
+            }
+            else {
+                throw $e;
+            }
+        }
+
         return $this->formatValue($value);
     }
 
