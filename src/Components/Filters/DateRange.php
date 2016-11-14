@@ -25,7 +25,7 @@ use Nette\Utils\Strings;
 class DateRange extends Date
 {
     /** @var string */
-    protected $condition = 'BETWEEN ? AND ?';
+    protected $condition = Condition::BETWEEN;
 
     /** @var string */
     protected $mask = '/(.*)\s?-\s?(.*)/';

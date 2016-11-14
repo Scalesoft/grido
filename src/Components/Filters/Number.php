@@ -21,7 +21,7 @@ namespace Grido\Components\Filters;
 class Number extends Text
 {
     /** @var string */
-    protected $condition;
+    protected $condition = Condition::EMPTY_CONDITION;
 
     /**
      * @return \Nette\Forms\Controls\TextInput

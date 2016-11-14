@@ -26,7 +26,7 @@ use Grido\Exception;
 class Text extends Filter
 {
     /** @var string */
-    protected $condition = 'LIKE ?';
+    protected $condition = Condition::LIKE;
 
     /** @var string */
     protected $formatValue = '%%value%';

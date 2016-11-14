@@ -45,7 +45,7 @@ abstract class Filter extends \Grido\Components\Component
     protected $column = [];
 
     /** @var string */
-    protected $condition = '= ?';
+    protected $condition = Condition::EQUAL;
 
     /** @var callable */
     protected $where;
@@ -110,12 +110,24 @@ abstract class Filter extends \Grido\Components\Component
 
     /**
      * Sets custom condition.
-     * @param $condition
+     * @param              $condition
+     * @param string|false $formatValue
      * @return Filter
      */
-    public function setCondition($condition)
+    public function setCondition($condition, $formatValue = FALSE)
     {
         $this->condition = $condition;
+        if ($formatValue !== FALSE) {
+            $this->formatValue = $formatValue;
+        }
+        else if (
+            $condition === Condition::EQUAL
+            || $condition === Condition::IS_NOT_NULL
+            || $condition === Condition::BETWEEN
+            || $condition === Condition::EMPTY_CONDITION
+        ) {
+            $this->formatValue = NULL;
+        }
         return $this;
     }
 

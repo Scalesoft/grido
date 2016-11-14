@@ -24,7 +24,7 @@ class Check extends Filter
     const TRUE = '✓';
 
     /** @var string */
-    protected $condition = 'IS NOT NULL';
+    protected $condition = Condition::IS_NOT_NULL;
 
     /**
      * @return \Nette\Forms\Controls\Checkbox

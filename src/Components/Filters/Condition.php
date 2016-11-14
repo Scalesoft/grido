@@ -30,6 +30,12 @@ class Condition extends \Nette\Object
     const OPERATOR_OR = 'OR';
     const OPERATOR_AND = 'AND';
 
+    const EQUAL = '= ?';
+    const IS_NOT_NULL = 'IS NOT NULL';
+    const BETWEEN = 'BETWEEN ? AND ?';
+    const LIKE = 'LIKE ?';
+    const EMPTY_CONDITION = NULL;
+
     /** @var array */
     protected $column;
 
