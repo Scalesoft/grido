@@ -166,7 +166,10 @@
         initEditable: function()
         {
             var that = this;
-            $('td[class*="grid-cell-"]', this.$element)
+            $('td[class*="grid-cell-"].editable.editable-auto-init').each(function (index, th) {
+                this.editable = new Grido.Editable(that).init($(th));
+            });
+            $('td[class*="grid-cell-"].editable:not(.editable-auto-init)')
                 .off('dblclick.grido')
                 .on('dblclick.grido', function(event) {
                     if (helpers.isCtrl(event) && !$(this).hasClass('edit')) {
@@ -612,7 +615,12 @@
                 this.primaryKey = this.getPrimaryKeyValue(this.td.parent());
 
                 this.componentName = this.getComponentName(this.th);
-                this.editControlHtml = this.getEditControl(this.componentName, this.getEditControlHandlerUrl(this.th));
+                if ($td.hasClass('editable-auto-init')) {
+                    this.editControlHtml = $td.html();
+                }
+                else {
+                    this.editControlHtml = this.getEditControl(this.componentName, this.getEditControlHandlerUrl(this.th));
+                }
                 this.renderEditControl(this.td, this.editControlHtml);
 
                 this.editControlObject = this.getEditControlObject(this.td);
@@ -749,7 +757,7 @@
          */
         getEditControlObject: function($td)
         {
-            return $td.children();
+            return $td.find('input, textarea, select');
         },
 
         /**
@@ -796,11 +804,11 @@
             })
             .success(function(data) {
                 if (data.updated === true) {
-		    if (data.html) {
-			$td.html(data.html);
-		    } else {
-			$td.html(newValue);
-		    }
+                    if (data.html) {
+                    $td.html(data.html);
+                    } else {
+                    $td.html(newValue);
+                    }
                     $td.data('grido-editable-value', newValue);
                     that.oldValue = newValue;
                     that.flashSuccess($td);
@@ -911,6 +919,13 @@
                  .on('keypress.grido', keypress)
                 .off('keydown.grido')
                  .on('keydown.grido',  keydown);
+
+            $control.parent().find('[data-confirm-inline-edit]').click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                saveData($control[0]);
+            });
         }
     };
 

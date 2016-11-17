@@ -86,6 +86,7 @@ abstract class Column extends \Grido\Components\Component
 
         $this->type = get_class($this);
         $this->label = $label;
+        $this->cellPrototype = \Nette\Utils\Html::el('td');
     }
 
     /**
@@ -176,12 +177,10 @@ abstract class Column extends \Grido\Components\Component
      */
     public function getCellPrototype($row = NULL)
     {
-        $td = $this->cellPrototype;
+        /** @var \Nette\Utils\Html $td */
+        $td = clone $this->cellPrototype;
 
-        if ($td === NULL) { //cache
-            $td = $this->cellPrototype = \Nette\Utils\Html::el('td')
-                ->setClass(['grid-cell-' . $this->getName()]);
-        }
+        $td->setClass(['grid-cell-' . $this->getName()]);
 
         if ($this->cellCallback && $row !== NULL) {
             $td = clone $td;

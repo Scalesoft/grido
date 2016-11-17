@@ -26,7 +26,7 @@ class EditableTest extends \Tester\TestCase
         $column = $grid->addColumnText('column', 'Column');
         Assert::same(FALSE, $column->editable);
         Assert::same(NULL, $column->editableCallback);
-        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControl);
+        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControlPrototype);
 
         // EDITABLE
         $grid = new Grid();
@@ -34,7 +34,7 @@ class EditableTest extends \Tester\TestCase
         Assert::same(TRUE, $column->editable);
         Assert::same(FALSE, $column->editableDisabled);
         Assert::same(NULL, $column->editableCallback);
-        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControl);
+        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControlPrototype);
 
         // EDITABLE AND DISABLED
         $grid = new Grid();
@@ -43,7 +43,7 @@ class EditableTest extends \Tester\TestCase
         Assert::same(FALSE, $column->editable);
         Assert::same(TRUE, $column->editableDisabled);
         Assert::same(NULL, $column->editableCallback);
-        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControl);
+        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControlPrototype);
 
         // EDITABLE AND AN OWN CALLBACK VIA PARAM
         $callback = [$this, 'test'];
@@ -52,7 +52,7 @@ class EditableTest extends \Tester\TestCase
         Assert::same(TRUE, $column->editable);
         Assert::same(FALSE, $column->editableDisabled);
         Assert::same($callback, $column->editableCallback);
-        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControl);
+        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControlPrototype);
 
         // EDITABLE AND AN OWN CALLBACK VIA METHOD
         $callback = [$this, 'test'];
@@ -62,7 +62,7 @@ class EditableTest extends \Tester\TestCase
         Assert::same(TRUE, $column->editable);
         Assert::same(FALSE, $column->editableDisabled);
         Assert::same($callback, $column->editableCallback);
-        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControl);
+        Assert::type('\Nette\Forms\Controls\TextInput', $column->editableControlPrototype);
 
         // EDITABLE AND AN OWN CALLBACK, CONTROL VIA PARAM
         $callback = [$this, 'test'];
@@ -72,7 +72,7 @@ class EditableTest extends \Tester\TestCase
         Assert::same(TRUE, $column->editable);
         Assert::same(FALSE, $column->editableDisabled);
         Assert::same($callback, $column->editableCallback);
-        Assert::same($control, $column->editableControl);
+        Assert::same($control, $column->editableControlPrototype);
 
         // EDITABLE AND AN OWN CONTROL VIA METHOD
         $callback = [$this, 'test'];
@@ -83,7 +83,7 @@ class EditableTest extends \Tester\TestCase
         Assert::same(TRUE, $column->editable);
         Assert::same(FALSE, $column->editableDisabled);
         Assert::same(NULL, $column->editableCallback);
-        Assert::same($control, $column->editableControl);
+        Assert::same($control, $column->editableControlPrototype);
 
         // EDITABLE AND AN OWN VALUE CALLBACK VIA METHOD
         $valueCallback = [$this, 'test'];

@@ -12,6 +12,7 @@
 namespace Grido\Components\Columns;
 
 use Grido\Exception;
+use Nette;
 
 /**
  * An inline editable column.
@@ -21,12 +22,12 @@ use Grido\Exception;
  * @author      Jakub Kopřiva <kopriva.jakub@gmail.com>
  * @author      Petr Bugyík
  *
- * @property \Nette\Forms\IControl $editableControl
- * @property callback $editableCallback
- * @property callback $editableValueCallback
- * @property callback $editableRowCallback
- * @property bool $editable
- * @property bool $editableDisabled
+ * @property \Nette\Forms\IControl|callable $editableControlPrototype
+ * @property callback                       $editableCallback
+ * @property callback                       $editableValueCallback
+ * @property callback                       $editableRowCallback
+ * @property bool                           $editable
+ * @property bool                           $editableDisabled
  */
 abstract class Editable extends Column
 {
@@ -34,10 +35,16 @@ abstract class Editable extends Column
     protected $editable = FALSE;
 
     /** @var bool */
+    protected $editableAutoInit = FALSE;
+
+    /** @var callable */
+    protected $disableEditable = NULL;
+
+    /** @var bool */
     protected $editableDisabled = FALSE;
 
-    /** @var \Nette\Forms\IControl Custom control for inline editing */
-    protected $editableControl;
+    /** @var \Nette\Forms\IControl|callable Custom control for inline editing */
+    protected $editableControlPrototype;
 
     /** @var callback for custom handling with edited data; function($id, $newValue, $oldValue, Editable $column) {} */
     protected $editableCallback;
@@ -48,15 +55,31 @@ abstract class Editable extends Column
     /** @var callback for getting row; function($row, Columns\Editable $column) {} */
     protected $editableRowCallback;
 
+    /** @var Nette\Utils\Html */
+    protected $inlineEditConfirmPrototype;
+
+    public function __construct($grid, $name, $label)
+    {
+        parent::__construct($grid, $name, $label);
+
+        $this->inlineEditConfirmPrototype = Nette\Utils\Html::el('button', ['data-confirm-inline-edit' => TRUE]);
+    }
+
     /**
      * Sets column as editable.
-     * @param callback $callback function($id, $newValue, $oldValue, Columns\Editable $column) {}
+     *
+     * @param callback              $callback function($id, $newValue, $oldValue, Columns\Editable $column) {}
      * @param \Nette\Forms\IControl $control
+     * @param bool                  $editableAutoInit
+     * @param callable              $disableEditable
+     *
      * @return Editable
      */
-    public function setEditable($callback = NULL, \Nette\Forms\IControl $control = NULL)
+    public function setEditable($callback = NULL, $control = NULL, $editableAutoInit = FALSE, callable $disableEditable = NULL)
     {
         $this->editable = TRUE;
+        $this->editableAutoInit = $editableAutoInit;
+        $this->disableEditable = $disableEditable;
         $this->setClientSideOptions();
 
         $callback && $this->setEditableCallback($callback);
@@ -67,13 +90,21 @@ abstract class Editable extends Column
 
     /**
      * Sets control for inline editation.
-     * @param \Nette\Forms\IControl $control
+     *
+     * @param \Nette\Forms\IControl|callable $control
+     *
      * @return Editable
+     * @throws \InvalidArgumentException
      */
-    public function setEditableControl(\Nette\Forms\IControl $control)
+    public function setEditableControl($control)
     {
-        $this->isEditable() ?: $this->setEditable();
-        $this->editableControl = $control;
+        if ($control instanceof \Nette\Forms\IControl || is_callable($control)) {
+            $this->isEditable() ?: $this->setEditable();
+            $this->editableControlPrototype = $control;
+        }
+        else {
+            throw new \InvalidArgumentException('Parameter must be \Nette\Forms\IControl or callable');
+        }
 
         return $this;
     }
@@ -194,9 +225,15 @@ abstract class Editable extends Column
     {
         $td = parent::getCellPrototype($row);
 
-        if ($this->isEditable() && $row !== NULL) {
+        if ($this->isEditable() && $row !== NULL && $this->enableEditable($row)) {
             if (!in_array('editable', $td->class)) {
                 $td->class[] = 'editable';
+            }
+
+            if ($this->isEditableAutoInit()) {
+                if ( !in_array('editable-auto-init', $td->class)) {
+                    $td->class[] = 'editable-auto-init';
+                }
             }
 
             $value = $this->editableValueCallback === NULL
@@ -209,18 +246,42 @@ abstract class Editable extends Column
         return $td;
     }
 
+    public function getInlineEditConfirmPrototype()
+    {
+        return $this->inlineEditConfirmPrototype;
+    }
+
     /**
      * Returns control for editation.
-     * @returns \Nette\Forms\Controls\TextInput
+     *
+     * @param \Nette\Forms\Container $container
+     * @param null                   $name
+     *
+     * @return \Nette\Forms\Controls\BaseControl
+     * @throws \RuntimeException
      */
-    public function getEditableControl()
+    public function getEditableControl(\Nette\Forms\Container $container, $name)
     {
-        if ($this->editableControl === NULL) {
-            $this->editableControl = new \Nette\Forms\Controls\TextInput;
-            $this->editableControl->controlPrototype->class[] = 'form-control';
+        $editableControl = NULL;
+
+        if ($this->editableControlPrototype === NULL) {
+            $editableControl = $container->addText($name);
+            $editableControl->controlPrototype->class[] = 'form-control';
+
+            return $editableControl;
+        }
+        else if ($this->editableControlPrototype instanceof \Nette\Forms\Controls\BaseControl) {
+            $editableControl = clone $this->editableControlPrototype;
+        }
+        else if (is_callable($this->editableControlPrototype)) {
+            $editableControl = call_user_func($this->editableControlPrototype, $container, $name);
         }
 
-        return $this->editableControl;
+        if ( !$editableControl instanceof \Nette\Forms\Controls\BaseControl) {
+            throw new \RuntimeException('Editable control is not instanceof \Nette\Forms\Controls\BaseControl');
+        }
+
+        return $editableControl;
     }
 
     /**
@@ -257,6 +318,15 @@ abstract class Editable extends Column
     public function isEditable()
     {
         return $this->editable;
+    }
+
+    /**
+     * @return bool
+     * @internal
+     */
+    public function isEditableAutoInit()
+    {
+        return $this->editableAutoInit;
     }
 
     /**
@@ -310,12 +380,58 @@ abstract class Editable extends Column
             $this->presenter->terminate();
         }
 
-        $control = $this->getEditableControl();
+        $control = $this->getEditableControl($this->getForm(), 'edit' . $this->getName());
         $control->setValue($value);
-
-        $this->getForm()->addComponent($control, 'edit' . $this->getName());
 
         $response = new \Nette\Application\Responses\TextResponse($control->getControl()->render());
         $this->presenter->sendResponse($response);
+    }
+
+    public function render($row)
+    {
+        if ($this->editableAutoInit && $this->enableEditable($row)) {
+            $replacements = $this->replacements;
+            $this->replacements = [];
+            $value = parent::render($row);
+            $this->replacements = $replacements;
+
+            $id = $this->getGrid()->getPropertyAccessor()->getValue($row, 'id');
+
+            $control = $this->getEditableControl($this->getEditContainer('edit' . $this->getName()), $id);
+            $control->setValue($value);
+
+            return $control->getControl() . $this->inlineEditConfirmPrototype;
+        }
+        else {
+            return parent::render($row);
+        }
+    }
+
+    /**
+     * @param $name
+     *
+     * @return \Nette\Forms\Container
+     */
+    protected function getEditContainer($name)
+    {
+        $form = $this->getForm();
+
+        if ( !isset($form->components[$name])) {
+            $form->addContainer($name);
+        }
+
+        return $form->components[$name];
+    }
+
+    protected function enableEditable($row)
+    {
+        if ( !$this->isEditable()) {
+            return FALSE;
+        }
+        if (is_null($this->disableEditable)) {
+            return TRUE;
+        }
+
+        return !call_user_func($this->disableEditable, $row);
     }
 }
