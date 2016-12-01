@@ -246,7 +246,9 @@ class Doctrine extends \Nette\Object implements IDataSource
         foreach ($sorting as $key => $value) {
             $column = isset($this->sortMapping[$key])
                 ? $this->sortMapping[$key]
-                : current($this->qb->getRootAliases()) . '.' . $key;
+                : (Strings::contains($key, ".")
+                    ? $key
+                    : current($this->qb->getRootAliases()) . '.' . $key);
 
             $this->qb->addOrderBy($column, $value);
         }
