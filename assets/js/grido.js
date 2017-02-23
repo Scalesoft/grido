@@ -728,14 +728,14 @@
             data[componentName + '-value'] = this.value;
 
             $.ajax({
-                type: "GET",
-                url: handleLink,
-                data: data,
-                async: false
-            })
-            .success(function(data) {
-                control = data;
-            });
+				type: "GET",
+				url: handleLink,
+				data: data,
+				async: false,
+				success: function (data) {
+					control = data;
+				}
+			});
 
             return control;
         },
