@@ -800,22 +800,22 @@
                 type: "POST",
                 url: this.getEditHandlerUrl($th),
                 data: data,
-                async: true
-            })
-            .success(function(data) {
-                if (data.updated === true) {
-                    if (data.html) {
-                    $td.html(data.html);
-                    } else {
-                    $td.html(newValue);
-                    }
-                    $td.data('grido-editable-value', newValue);
-                    that.oldValue = newValue;
-                    that.flashSuccess($td);
-                } else {
-                    that.flashError($td);
-                    that.revertChanges($td);
-                }
+				async: true,
+				success: function (data) {
+					if (data.updated === true) {
+						if (data.html) {
+							$td.html(data.html);
+						} else {
+							$td.html(newValue);
+						}
+						$td.data('grido-editable-value', newValue);
+						that.oldValue = newValue;
+						that.flashSuccess($td);
+					} else {
+						that.flashError($td);
+						that.revertChanges($td);
+					}
+				}
             });
         },
 
