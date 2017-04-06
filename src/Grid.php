@@ -916,7 +916,9 @@ class Grid extends Components\Container
 
             foreach ($filter as $column => $value) {
                 if ($component = $this->getFilter($column, FALSE)) {
-                    if ($condition = $component->__getCondition($value)) {
+                    $condition = $component->__getCondition($value);
+
+                    if ($condition && count($condition->getColumn()) > 0) {
                         $conditions[] = $condition;
                     }
                 } else {
