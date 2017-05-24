@@ -94,7 +94,25 @@ class Date extends Editable
             return call_user_func_array($this->customRenderExport, [$row]);
         }
 
-        $value = $this->getValue($row);
+        try {
+            $value = $this->getValue($row);
+        }
+        catch (\Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException $e) {
+            if ($this->optionalValue) {
+                $value = NULL;
+            }
+            else {
+                throw $e;
+            }
+        }
+        catch (\Doctrine\ORM\EntityNotFoundException $e) {
+            if ($this->optionalValue) {
+                $value = NULL;
+            }
+            else {
+                throw $e;
+            }
+        }
         return $this->formatValue($value);
     }
 }
