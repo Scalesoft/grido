@@ -70,7 +70,7 @@
         {
             $('.filter select, .filter [type=checkbox]', this.$element)
                 .off('change.grido')
-                .on('change.grido', this.sendFilterForm);
+                .on('change.grido', this.sendFilterForm.bind(this));
 
             var that = this;
             $('.filter input, .filter textarea', this.$element)
