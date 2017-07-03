@@ -87,7 +87,7 @@ abstract class Filter extends \Grido\Components\Component
      * Map to database column.
      * @param string $column
      * @param string $operator
-     * @return Filter
+     * @return static
      * @throws Exception
      */
     public function setColumn($column, $operator = Condition::OPERATOR_OR)
@@ -112,7 +112,7 @@ abstract class Filter extends \Grido\Components\Component
      * Sets custom condition.
      * @param              $condition
      * @param string|false $formatValue
-     * @return Filter
+     * @return static
      */
     public function setCondition($condition, $formatValue = FALSE)
     {
@@ -134,7 +134,7 @@ abstract class Filter extends \Grido\Components\Component
     /**
      * Sets custom "sql" where.
      * @param callable $callback function($value, $source) {}
-     * @return Filter
+	 * @return static
      */
     public function setWhere($callback)
     {
@@ -145,7 +145,7 @@ abstract class Filter extends \Grido\Components\Component
     /**
      * Sets custom format value.
      * @param string $format for example: "%%value%"
-     * @return Filter
+	 * @return static
      */
     public function setFormatValue($format)
     {
@@ -156,7 +156,7 @@ abstract class Filter extends \Grido\Components\Component
     /**
      * Sets default value.
      * @param string $value
-     * @return Filter
+	 * @return static
      */
     public function setDefaultValue($value)
     {

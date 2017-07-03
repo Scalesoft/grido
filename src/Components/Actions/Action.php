@@ -26,7 +26,7 @@ use Nette\Utils\Html;
  * @property-write callback $disable
  * @property Html $elementPrototype
  * @property string $primaryKey
- * @property string $options
+ * @property string[] $options
  */
 abstract class Action extends \Grido\Components\Component
 {
@@ -44,7 +44,7 @@ abstract class Action extends \Grido\Components\Component
     /** @var callback for disabling */
     protected $disable;
 
-    /** @var string */
+    /** @var string[] */
     protected $options;
 
     /**
@@ -63,7 +63,7 @@ abstract class Action extends \Grido\Components\Component
     /**
      * Sets html element.
      * @param Html $elementPrototype
-     * @return Action
+     * @return static
      */
     public function setElementPrototype(Html $elementPrototype)
     {
@@ -74,7 +74,7 @@ abstract class Action extends \Grido\Components\Component
     /**
      * Sets callback for custom rendering.
      * @param callback
-     * @return Action
+     * @return static
      */
     public function setCustomRender($callback)
     {
@@ -85,7 +85,7 @@ abstract class Action extends \Grido\Components\Component
     /**
      * Sets primary key.
      * @param string $primaryKey
-     * @return Action
+     * @return static
      */
     public function setPrimaryKey($primaryKey)
     {
@@ -97,7 +97,7 @@ abstract class Action extends \Grido\Components\Component
      * Sets callback for disable.
      * Callback should return TRUE if the action is not allowed for current item.
      * @param callback
-     * @return Action
+     * @return static
      */
     public function setDisable($callback)
     {
@@ -108,7 +108,7 @@ abstract class Action extends \Grido\Components\Component
     /**
      * Sets client side confirm.
      * @param string|callback $confirm
-     * @return Action
+     * @return static
      */
     public function setConfirm($confirm)
     {
@@ -119,7 +119,7 @@ abstract class Action extends \Grido\Components\Component
     /**
      * Sets name of icon.
      * @param string $name
-     * @return Action
+     * @return static
      */
     public function setIcon($name)
     {
@@ -131,7 +131,7 @@ abstract class Action extends \Grido\Components\Component
      * Sets user-specific option.
      * @param string $key
      * @param mixed $value
-     * @return Action
+     * @return static
      */
     public function setOption($key, $value)
     {
@@ -219,7 +219,7 @@ abstract class Action extends \Grido\Components\Component
 
     /**
      * Returns user-specific options.
-     * @return array
+     * @return string[]
      */
     public function getOptions()
     {

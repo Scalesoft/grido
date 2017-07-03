@@ -73,7 +73,7 @@ abstract class Editable extends Column
      * @param bool                  $editableAutoInit
      * @param callable              $disableEditable
      *
-     * @return Editable
+     * @return static
      */
     public function setEditable($callback = NULL, $control = NULL, $editableAutoInit = FALSE, callable $disableEditable = NULL)
     {
@@ -93,7 +93,7 @@ abstract class Editable extends Column
      *
      * @param \Nette\Forms\IControl|callable $control
      *
-     * @return Editable
+     * @return static
      * @throws \InvalidArgumentException
      */
     public function setEditableControl($control)
@@ -112,7 +112,7 @@ abstract class Editable extends Column
     /**
      * Sets editable callback.
      * @param callback $callback function($id, $newValue, $oldValue, Columns\Editable $column) {}
-     * @return Editable
+     * @return static
      */
     public function setEditableCallback($callback)
     {
@@ -125,7 +125,7 @@ abstract class Editable extends Column
     /**
      * Sets editable value callback.
      * @param callback $callback for custom value; function($row, Columns\Editable $column) {}
-     * @return Editable
+     * @return static
      */
     public function setEditableValueCallback($callback)
     {
@@ -138,7 +138,7 @@ abstract class Editable extends Column
     /**
      * Sets editable row callback - it's required when used editable collumn with customRenderCallback
      * @param callback $callback for getting row; function($id, Columns\Editable $column) {}
-     * @return Editable
+     * @return static
      */
     public function setEditableRowCallback($callback)
     {
@@ -149,7 +149,7 @@ abstract class Editable extends Column
     }
 
     /**
-     * @return Editable
+     * @return static
      */
     public function disableEditable()
     {

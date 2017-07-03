@@ -91,7 +91,7 @@ abstract class Column extends \Grido\Components\Component
 
     /**
      * @param bool $sortable
-     * @return Column
+     * @return static
      */
     public function setSortable($sortable = TRUE)
     {
@@ -101,7 +101,7 @@ abstract class Column extends \Grido\Components\Component
 
     /**
      * @param array $replacement array('pattern' => 'replacement')
-     * @return Column
+     * @return static
      */
     public function setReplacement(array $replacement)
     {
@@ -111,7 +111,7 @@ abstract class Column extends \Grido\Components\Component
 
     /**
      * @param mixed $column
-     * @return Column
+     * @return static
      */
     public function setColumn($column)
     {
@@ -127,7 +127,7 @@ abstract class Column extends \Grido\Components\Component
 
     /**
      * @param string $dir
-     * @return Column
+     * @return static
      */
     public function setDefaultSort($dir)
     {
@@ -138,7 +138,7 @@ abstract class Column extends \Grido\Components\Component
     /**
      * @param mixed $callback callback or string for name of template filename
      * @param array $variables - template variables
-     * @return Column
+     * @return static
      */
     public function setCustomRender($callback, $variables = [])
     {
@@ -150,7 +150,7 @@ abstract class Column extends \Grido\Components\Component
 
     /**
      * @param mixed $callback |
-     * @return Column
+     * @return static
      */
     public function setCustomRenderExport($callback)
     {
@@ -160,7 +160,7 @@ abstract class Column extends \Grido\Components\Component
 
     /**
      * @param callback $callback
-     * @return Column
+     * @return static
      */
     public function setCellCallback($callback)
     {

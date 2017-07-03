@@ -416,7 +416,7 @@ abstract class Container extends \Nette\Application\UI\Control
      * Sets all columns as editable.
      * First parameter is optional and is for implementation of method for saving modified data.
      * @param callback $callback function($id, $newValue, $oldValue, Editable $column) {}
-     * @return Grid
+     * @return static
      */
     public function setEditableColumns($callback = NULL)
     {
