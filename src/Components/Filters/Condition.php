@@ -23,7 +23,7 @@ use Grido\Exception;
  * @property array $column
  * @property array $condition
  * @property mixed $value
- * @property-read callable $callback
+ * @property callable $callback
  */
 class Condition extends \Nette\Object
 {
