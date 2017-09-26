@@ -247,6 +247,14 @@ abstract class Column extends \Grido\Components\Component
         return $this->customRender;
     }
 
+	/**
+	 * @return callable
+	 */
+	public function getCustomRenderExport()
+	{
+		return $this->customRenderExport;
+	}
+
     /**
      * @return array
      * @internal

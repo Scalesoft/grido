@@ -46,7 +46,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  * @property bool $strictMode
  * @method void onRegistered(Grid $grid)
  * @method void onRender(Grid $grid)
- * @method void onFetchData(Grid $grid)
+ * @method void onFetchData(Grid $grid, array $data)
  */
 class Grid extends Components\Container
 {
@@ -486,7 +486,7 @@ class Grid extends Components\Container
             }
 
             if (!empty($this->onFetchData)) {
-                $this->onFetchData($this);
+                $this->onFetchData($this, $data, $applyPaging);
             }
         }
 
