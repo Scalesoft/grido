@@ -46,7 +46,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  * @property bool $strictMode
  * @method void onRegistered(Grid $grid)
  * @method void onRender(Grid $grid)
- * @method void onFetchData(Grid $grid, array $data)
+ * @method void onFetchData(Grid $grid, array $data, $applyPaging)
  */
 class Grid extends Components\Container
 {
