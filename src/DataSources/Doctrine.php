@@ -18,24 +18,8 @@ use Nette\Utils\Strings;
 use Nette\Utils\Random;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-/**
- * Doctrine data source.
- *
- * @package     Grido
- * @subpackage  DataSources
- * @author      Martin Jantosovic <martin.jantosovic@freya.sk>
- * @author      Petr Bugyík
- *
- * @property-read \Doctrine\ORM\QueryBuilder $qb
- * @property-read array $filterMapping
- * @property-read array $sortMapping
- * @property-read int $count
- * @property-read array $data
- */
 class Doctrine implements IDataSource
 {
-    use \Nette\SmartObject;
-
     /** @var \Doctrine\ORM\QueryBuilder */
     protected $qb;
 
@@ -61,8 +45,11 @@ class Doctrine implements IDataSource
      * @param array $filterMapping Maps columns to the DQL columns
      * @param array $sortMapping Maps columns to the DQL columns
      */
-    public function __construct(\Doctrine\ORM\QueryBuilder $qb, array $filterMapping = NULL, array $sortMapping = NULL)
-    {
+    public function __construct(
+        \Doctrine\ORM\QueryBuilder $qb,
+        array $filterMapping = NULL,
+        array $sortMapping = NULL
+    ) {
         $this->qb = $qb;
         $this->filterMapping = $filterMapping;
         $this->sortMapping = $sortMapping;
@@ -141,11 +128,16 @@ class Doctrine implements IDataSource
         $columns = $condition->column;
         foreach ($columns as $key => $column) {
             if (!Condition::isOperator($column)) {
-                $columns[$key] = (isset($this->filterMapping[$column])
-                    ? $this->filterMapping[$column]
-                    : (Strings::contains($column, ".")
+                if (array_key_exists($column, $this->filterMapping)) {
+                    $columns[$key] = is_callable($this->filterMapping[$column])
+                        ? call_user_func($this->filterMapping[$column], $column, $qb)
+                        : $this->filterMapping[$column];
+                }
+                else {
+                    $columns[$key] = Strings::contains($column, '.')
                         ? $column
-                        : current($this->qb->getRootAliases()) . '.' . $column));
+                        : current($this->qb->getRootAliases()) . '.' . $column;
+                }
             }
         }
 
@@ -246,11 +238,16 @@ class Doctrine implements IDataSource
     public function sort(array $sorting)
     {
         foreach ($sorting as $key => $value) {
-            $column = isset($this->sortMapping[$key])
-                ? $this->sortMapping[$key]
-                : (Strings::contains($key, ".")
+            if (array_key_exists($key, $this->sortMapping)) {
+                $column = is_callable($this->sortMapping[$key])
+                    ? call_user_func($this->sortMapping[$key], $key, $this->qb)
+                    : $this->sortMapping[$key];
+            }
+            else {
+                $column = Strings::contains($key, '.')
                     ? $key
-                    : current($this->qb->getRootAliases()) . '.' . $key);
+                    : current($this->qb->getRootAliases()) . '.' . $key;
+            }
 
             $this->qb->addOrderBy($column, $value);
         }
@@ -269,11 +266,16 @@ class Doctrine implements IDataSource
         $qb->setMaxResults($limit);
 
         if (is_string($column)) {
-            $mapping = (isset($this->filterMapping[$column])
-                ? $this->filterMapping[$column]
-                : (Strings::contains($column, ".")
-                    ? $column
-                    : current($qb->getRootAliases()) . '.' . $column));
+			if (array_key_exists($column, $this->filterMapping)) {
+				$mapping = is_callable($this->filterMapping[$column])
+					? call_user_func($this->filterMapping[$column], $column, $qb)
+					: $this->filterMapping[$column];
+			}
+			else {
+				$mapping = Strings::contains($column, '.')
+					? $column
+					: current($qb->getRootAliases()) . '.' . $column;
+			}
 
             $qb->select($mapping)->distinct()->orderBy($mapping);
         }
