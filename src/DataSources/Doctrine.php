@@ -128,7 +128,7 @@ class Doctrine implements IDataSource
         $columns = $condition->column;
         foreach ($columns as $key => $column) {
             if (!Condition::isOperator($column)) {
-                if (array_key_exists($column, $this->filterMapping)) {
+                if (!is_null($this->filterMapping) && array_key_exists($column, $this->filterMapping)) {
                     $columns[$key] = is_callable($this->filterMapping[$column])
                         ? call_user_func($this->filterMapping[$column], $column, $qb)
                         : $this->filterMapping[$column];
@@ -238,7 +238,7 @@ class Doctrine implements IDataSource
     public function sort(array $sorting)
     {
         foreach ($sorting as $key => $value) {
-            if (array_key_exists($key, $this->sortMapping)) {
+            if (!is_null($this->sortMapping) && array_key_exists($key, $this->sortMapping)) {
                 $column = is_callable($this->sortMapping[$key])
                     ? call_user_func($this->sortMapping[$key], $key, $this->qb)
                     : $this->sortMapping[$key];
@@ -266,7 +266,7 @@ class Doctrine implements IDataSource
         $qb->setMaxResults($limit);
 
         if (is_string($column)) {
-			if (array_key_exists($column, $this->filterMapping)) {
+			if (!is_null($this->filterMapping) && array_key_exists($column, $this->filterMapping)) {
 				$mapping = is_callable($this->filterMapping[$column])
 					? call_user_func($this->filterMapping[$column], $column, $qb)
 					: $this->filterMapping[$column];
