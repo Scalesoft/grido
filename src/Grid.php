@@ -447,15 +447,19 @@ class Grid extends Components\Container
         return $key !== NULL && isset($filter[$key]) ? $filter[$key] : $filter;
     }
 
-    /**
-     * Returns fetched data.
-     * @param bool $applyPaging
-     * @param bool $useCache
-     * @param bool $fetch
-     * @throws Exception
-     * @return array|DataSources\IDataSource|\Nette\Database\Table\Selection
-     */
-    public function getData($applyPaging = TRUE, $useCache = TRUE, $fetch = TRUE)
+	/**
+	 * Returns fetched data.
+	 *
+	 * @param bool $applyPaging
+	 * @param bool $useCache
+	 * @param bool $fetch
+	 * @param bool $throwError
+	 *
+	 * @return array|DataSources\IDataSource|\Nette\Database\Table\Selection
+	 * @throws \Grido\Exception
+	 * @throws \InvalidArgumentException
+	 */
+    public function getData($applyPaging = TRUE, $useCache = TRUE, $fetch = TRUE, $throwError = FALSE)
     {
         if ($this->getModel() === NULL) {
             throw new Exception('Model cannot be empty, please use method $grid->setModel().');
@@ -481,8 +485,12 @@ class Grid extends Components\Container
             }
 
             if ($applyPaging && !empty($data) && !in_array($this->page, range(1, $this->getPaginator()->pageCount))) {
-                $this->__triggerUserNotice("Page is out of range.");
-                $this->page = 1;
+            	if ($throwError) {
+            		throw new \InvalidArgumentException("Page is out of range");
+				} else {
+					$this->__triggerUserNotice("Page is out of range.");
+					$this->page = 1;
+				}
             }
 
             if (!empty($this->onFetchData)) {
