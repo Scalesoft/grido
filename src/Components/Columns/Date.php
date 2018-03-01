@@ -78,7 +78,7 @@ class Date extends Editable
             }
         }
 
-        return $value instanceof \DateTime
+        return $value instanceof \DateTimeInterface
             ? $value->format($this->dateFormat)
             : date($this->dateFormat, is_numeric($value) ? $value : strtotime($value)); //@todo notice for "01.01.1970"
     }
