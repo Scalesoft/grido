@@ -13,6 +13,7 @@ namespace Grido\Components\Columns;
 
 use Grido\Helpers;
 use Grido\Exception;
+use Nette;
 
 /**
  * Column grid.
@@ -82,6 +83,10 @@ abstract class Column extends \Grido\Components\Component
      */
     public function __construct($grid, $name, $label)
     {
+		if (Nette\Utils\Strings::contains($name, '.')) {
+			trigger_error('Component name should not contains dot, use setColumn instead');
+		}
+
         $this->addComponentToGrid($grid, Helpers::formatColumnName($name));
 
         $this->type = get_class($this);
