@@ -68,14 +68,14 @@ abstract class Editable extends Column
     /**
      * Sets column as editable.
      *
-     * @param callback              $callback function($id, $newValue, $oldValue, Columns\Editable $column) {}
-     * @param \Nette\Forms\IControl $control
-     * @param bool                  $editableAutoInit
-     * @param callable              $disableEditable
+     * @param callable                       $callback function($id, $newValue, $oldValue, Columns\Editable $column) {}
+     * @param \Nette\Forms\IControl|callable $control
+     * @param bool                           $editableAutoInit
+     * @param callable                       $disableEditable
      *
      * @return static
      */
-    public function setEditable($callback = NULL, $control = NULL, $editableAutoInit = FALSE, callable $disableEditable = NULL)
+    public function setEditable(callable $callback = NULL, $control = NULL, $editableAutoInit = FALSE, callable $disableEditable = NULL)
     {
         $this->editable = TRUE;
         $this->editableAutoInit = $editableAutoInit;
