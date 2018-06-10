@@ -11,6 +11,9 @@
 
 namespace Grido\Components;
 
+use Nette\Utils\IHtmlString;
+use Nette\Utils\Html;
+
 /**
  * Base of grid components.
  *
@@ -100,6 +103,20 @@ abstract class Component extends \Nette\Application\UI\PresenterComponent
      */
     protected function translate($message)
     {
+        if ($message instanceof IHtmlString) {
+            if ($message instanceof Html) {
+                $text = $message->getText();
+
+                if (!empty($text)) {
+                    $message->setText(
+                        $this->translate($text)
+                    );
+                }
+            }
+
+            return $message;
+        }
+
         return call_user_func_array([$this->grid->getTranslator(), "translate"], func_get_args());
     }
 }
