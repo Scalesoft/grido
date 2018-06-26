@@ -226,7 +226,7 @@ class ArraySource implements IDataSource
                 $value = (string) $column($row);
             } else {
                 $type = gettype($column);
-                throw new Exception("Column of suggestion must be string or callback, $type given.");
+                throw new Exception("Column of suggestion must be string or callable, $type given.");
             }
 
             $items[$value] = \Latte\Runtime\Filters::escapeHtml($value);

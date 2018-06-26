@@ -23,9 +23,9 @@ use Nette;
  * @author      Petr Bugyík
  *
  * @property \Nette\Forms\IControl|callable $editableControlPrototype
- * @property callback                       $editableCallback
- * @property callback                       $editableValueCallback
- * @property callback                       $editableRowCallback
+ * @property callable                       $editableCallback
+ * @property callable                       $editableValueCallback
+ * @property callable                       $editableRowCallback
  * @property bool                           $editable
  * @property bool                           $editableDisabled
  */
@@ -46,13 +46,13 @@ abstract class Editable extends Column
     /** @var \Nette\Forms\IControl|callable Custom control for inline editing */
     protected $editableControlPrototype;
 
-    /** @var callback for custom handling with edited data; function($id, $newValue, $oldValue, Editable $column) {} */
+    /** @var callable for custom handling with edited data; function($id, $newValue, $oldValue, Editable $column) {} */
     protected $editableCallback;
 
-    /** @var callback for custom value; function($row, Columns\Editable $column) {} */
+    /** @var callable for custom value; function($row, Columns\Editable $column) {} */
     protected $editableValueCallback;
 
-    /** @var callback for getting row; function($row, Columns\Editable $column) {} */
+    /** @var callable for getting row; function($row, Columns\Editable $column) {} */
     protected $editableRowCallback;
 
     /** @var Nette\Utils\Html */
@@ -111,7 +111,9 @@ abstract class Editable extends Column
 
     /**
      * Sets editable callback.
-     * @param callback $callback function($id, $newValue, $oldValue, Columns\Editable $column) {}
+     *
+     * @param callable $callback function($id, $newValue, $oldValue, Columns\Editable $column) {}
+     *
      * @return static
      */
     public function setEditableCallback($callback)
@@ -124,7 +126,9 @@ abstract class Editable extends Column
 
     /**
      * Sets editable value callback.
-     * @param callback $callback for custom value; function($row, Columns\Editable $column) {}
+     *
+     * @param callable $callback for custom value; function($row, Columns\Editable $column) {}
+     *
      * @return static
      */
     public function setEditableValueCallback($callback)
@@ -137,7 +141,9 @@ abstract class Editable extends Column
 
     /**
      * Sets editable row callback - it's required when used editable collumn with customRenderCallback
-     * @param callback $callback for getting row; function($id, Columns\Editable $column) {}
+     *
+     * @param callable $callback for getting row; function($id, Columns\Editable $column) {}
+     *
      * @return static
      */
     public function setEditableRowCallback($callback)
@@ -185,12 +191,12 @@ abstract class Editable extends Column
                     if (($column->editableCallback === NULL && (!is_string($colDb) || strpos($colDb, '.'))) ||
                         ($column->editableCallback === NULL && $isMissing('update'))
                     ) {
-                        $msg = "Column '$colName' has error: You must define callback via setEditableCallback().";
+                        $msg = "Column '$colName' has error: You must define callable via setEditableCallback().";
                         throw new Exception($msg);
                     }
 
                     if ($column->editableRowCallback === NULL && $column->customRender && $isMissing('getRow')) {
-                        $msg = "Column '$colName' has error: You must define callback via setEditableRowCallback().";
+                        $msg = "Column '$colName' has error: You must define callable via setEditableRowCallback().";
                         throw new Exception($msg);
                     }
                 }
@@ -285,7 +291,7 @@ abstract class Editable extends Column
     }
 
     /**
-     * @return callback
+     * @return callable
      * @internal
      */
     public function getEditableCallback()
@@ -294,7 +300,7 @@ abstract class Editable extends Column
     }
 
     /**
-     * @return callback
+     * @return callable
      * @internal
      */
     public function getEditableValueCallback()
@@ -303,7 +309,7 @@ abstract class Editable extends Column
     }
 
     /**
-     * @return callback
+     * @return callable
      * @internal
      */
     public function getEditableRowCallback()

@@ -29,8 +29,8 @@ class Operation extends Component
 {
     const ID = 'operations';
 
-    /** @var array callback on operation submit */
-    public $onSubmit;
+    /** @var callable[] on operation submit */
+    public $onSubmit = [];
 
     /** @var string */
     protected $primaryKey;
@@ -38,7 +38,7 @@ class Operation extends Component
     /**
      * @param \Grido\Grid $grid
      * @param array $operations
-     * @param callback $onSubmit - callback after operation submit
+     * @param callable $onSubmit - callback after operation submit
      */
     public function __construct($grid, array $operations, $onSubmit)
     {

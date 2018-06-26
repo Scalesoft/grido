@@ -42,7 +42,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  * @property string $primaryKey
  * @property string $filterRenderType
  * @property DataSources\IDataSource $model
- * @property callback $rowCallback
+ * @property callable $rowCallback
  * @property bool $strictMode
  * @method void onRegistered(Grid $grid)
  * @method void onRender(Grid $grid)
@@ -76,7 +76,7 @@ class Grid extends Components\Container
     /** @var array event for modifying data */
     public $onFetchData;
 
-    /** @var callback returns tr html element; function($row, Html $tr) */
+    /** @var callable returns tr html element; function($row, Html $tr) */
     protected $rowCallback;
 
     /** @var \Nette\Utils\Html */
@@ -304,7 +304,9 @@ class Grid extends Components\Container
     /**
      * Sets callback for customizing tr html object.
      * Callback returns tr html element; function($row, Html $tr).
-     * @param $callback
+     *
+     * @param callable $callback
+	 *
      * @return Grid
      */
     public function setRowCallback($callback)
@@ -418,7 +420,8 @@ class Grid extends Components\Container
 
     /**
      * Returns row callback.
-     * @return callback
+     *
+     * @return callable
      */
     public function getRowCallback()
     {

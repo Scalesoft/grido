@@ -25,7 +25,7 @@ use Nette;
  * @property-read string $sort
  * @property-read \Nette\Utils\Html $cellPrototype
  * @property-read \Nette\Utils\Html $headerPrototype
- * @property-write callback $cellCallback
+ * @property-write callable $cellCallback
  * @property-write string $defaultSorting
  * @property mixed $customRender
  * @property-write array $customRenderVariables
@@ -55,7 +55,7 @@ abstract class Column extends \Grido\Components\Component
     /** @var \Nette\Utils\Html <td> html tag */
     protected $cellPrototype;
 
-    /** @var callback returns td html element; function($row, Html $td) */
+    /** @var callable returns td html element; function($row, Html $td) */
     protected $cellCallback;
 
     /** @var \Nette\Utils\Html <th> html tag */
@@ -141,8 +141,9 @@ abstract class Column extends \Grido\Components\Component
     }
 
     /**
-     * @param mixed $callback callback or string for name of template filename
+     * @param callable|string $callback callback or string for name of template filename
      * @param array $variables - template variables
+     *
      * @return static
      */
     public function setCustomRender($callback, $variables = [])
@@ -164,7 +165,7 @@ abstract class Column extends \Grido\Components\Component
     }
 
     /**
-     * @param callback $callback
+     * @param callable $callback
      * @return static
      */
     public function setCellCallback($callback)
@@ -385,7 +386,7 @@ abstract class Column extends \Grido\Components\Component
             return call_user_func_array($column, [$row]);
 
         } else {
-            throw new Exception('Column must be string or callback.');
+            throw new Exception('Column must be string or callable.');
         }
     }
 

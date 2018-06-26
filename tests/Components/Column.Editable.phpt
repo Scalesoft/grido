@@ -142,7 +142,7 @@ class EditableTest extends \Tester\TestCase
 
             Assert::exception(function() use ($grid) {
                 $grid->render();
-            }, 'Grido\Exception', "Column 'firstname' has error: You must define callback via setEditableRowCallback().");
+            }, 'Grido\Exception', "Column 'firstname' has error: You must define callable via setEditableRowCallback().");
 
         })->run();
 
@@ -179,7 +179,7 @@ class EditableTest extends \Tester\TestCase
         $checkException = function($grid) {
             Assert::exception(function() use ($grid) {
                 $grid->render();
-            }, 'Grido\Exception', "Column 'firstname' has error: You must define callback via setEditableCallback().");
+            }, 'Grido\Exception', "Column 'firstname' has error: You must define callable via setEditableCallback().");
         };
 
         //array source
